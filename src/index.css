@@ -94,15 +94,37 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
     @apply bg-background text-foreground;
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
 .bg-gradient {
   background: linear-gradient(45deg, hsl(var(--primary)) 0%, #4f46e5 100%);
+}
+
+input,
+button,
+textarea,
+select {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .container {
+    @apply px-4;
+  }
+  
+  html, body {
+    overflow-x: hidden;
+  }
 }
 
 .download-history-container {
@@ -112,7 +134,7 @@
 
 /* Scrollbar styling */
 .download-history-container::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .download-history-container::-webkit-scrollbar-track {
@@ -127,4 +149,13 @@
 
 .download-history-container::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.6);
+}
+
+/* Safe area insets for mobile devices */
+.safe-area-inset-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
 }

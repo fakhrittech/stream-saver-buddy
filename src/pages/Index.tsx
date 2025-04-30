@@ -11,6 +11,7 @@ import DownloadProgress from "@/components/DownloadProgress";
 import DownloadHistory from "@/components/DownloadHistory";
 import { getVideoInfo, downloadVideo, VideoInfo } from "@/utils/youtubeService";
 import { generateUniqueId } from "@/utils/formatters";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface HistoryItem {
   id: string;
@@ -22,6 +23,7 @@ interface HistoryItem {
 
 const Index = () => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [url, setUrl] = useState("");
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -110,29 +112,28 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pb-10">
+    <div className="min-h-screen pb-10 max-w-full">
       {/* Header */}
-      <div className="bg-gradient text-white py-8 mb-8">
-        <div className="container">
-          <h1 className="text-3xl font-bold mb-2">YouTube Video Downloader</h1>
-          <p className="opacity-90">Search and download YouTube videos in various formats and qualities</p>
+      <div className="bg-gradient text-white py-6">
+        <div className="container px-4">
+          <h1 className="text-2xl font-bold mb-1">YouTube Downloader</h1>
+          <p className="opacity-90 text-sm">Search and download videos on your mobile</p>
         </div>
       </div>
       
       {/* Main content */}
-      <div className="container">
-        <Card className="mb-8">
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1">
-                <Input
-                  placeholder="Enter YouTube video URL"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  disabled={isLoading}
-                />
-              </div>
-              <Button type="submit" disabled={isLoading}>
+      <div className="container px-4 mt-5">
+        <Card className="mb-5 shadow-sm">
+          <CardContent className="p-4">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+              <Input
+                placeholder="Enter YouTube video URL"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                disabled={isLoading}
+                className="text-base"
+              />
+              <Button type="submit" disabled={isLoading} className="w-full">
                 {isLoading ? (
                   <span className="flex items-center gap-2">
                     <div className="h-4 w-4 border-2 border-t-transparent border-white rounded-full animate-spin"></div>
@@ -149,11 +150,9 @@ const Index = () => {
         </Card>
         
         {videoInfo && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="md:col-span-1">
-              <VideoCard videoInfo={videoInfo} />
-            </div>
-            <div className="md:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 gap-5 mb-5">
+            <VideoCard videoInfo={videoInfo} />
+            <div className="space-y-5">
               <DownloadOptions 
                 isLoading={downloadStatus === "downloading" || downloadStatus === "processing"} 
                 onDownload={handleDownload} 
@@ -169,15 +168,17 @@ const Index = () => {
         )}
         
         {errorMessage && !videoInfo && (
-          <Card className="mb-8 border-destructive">
-            <CardContent className="pt-6">
+          <Card className="mb-5 border-destructive">
+            <CardContent className="pt-4">
               <p className="text-destructive">{errorMessage}</p>
             </CardContent>
           </Card>
         )}
         
         {downloadHistory.length > 0 && (
-          <DownloadHistory history={downloadHistory} />
+          <div className="mt-5">
+            <DownloadHistory history={downloadHistory} />
+          </div>
         )}
       </div>
     </div>
